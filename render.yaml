@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: eficred-escritos
+    env: python
+    buildCommand: pip install -r requirements.txt && apt-get install -y libreoffice
+    startCommand: gunicorn app:app
+    envVars:
+      - key: GOOGLE_CREDENTIALS_JSON
+        sync: false
+      - key: TPL_INFORMA_OPE
+        value: 1rwuXVlE3dyWqSHe7ivMPahNpB_L6reoA0x0b9pe3QOQ
+      - key: TPL_LIQ_APOD
+        value: 18IDwJjSW6_Rt2QORzRTAdSrxxONv0aJ7Ir-7IRqx8us
+      - key: TPL_LIQ_PATR
+        value: 11LyQGVLu6opFqy1LgfqRqvpOCZx9vwWOD5cJl4XnoNQ
+      - key: TPL_APROB_LIQ
+        value: 1mZlc9pAghDb5gfa6xanOrWNrqA3gDwOHPgmCRH6iRlg
+      - key: TPL_APROB_OPE
+        value: 128px-ptOggJpKb_LelIm38XYZU3T8DU9-YRhhGJerzk
+      - key: TPL_AMPLIA
+        value: 1SN00MVBdDxjrFeSb8hyQ9zDGGWjTFsSZ7XrVHbpWV3M
+      - key: TPL_OFICIO
+        value: 10eliAnuSN9G1n7rb8C5Wy95mw7kMTuB5S6RXQgU4KFA
+      - key: TPL_OFICIO_REIT
+        value: 11PU44Fsu3R0rf5YUyvYFIOAG1pb9M0sTD-TK0-7EbBo
+      - key: TPL_TRANCE_APOD
+        value: 1KX5w-XRmlzPxOQCFCMFf_XyXamwg67BoAX26zn6hkVU
+      - key: TPL_TRANCE_PATR
+        value: 1fOkkODMFVPaTTWOdjsEsFNTSKw4ljvWzbc0ib4OTE0o
