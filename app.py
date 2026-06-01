@@ -22,8 +22,21 @@ def get_drive_service():
     return build('drive', 'v3', credentials=creds)
 
 def descargar_template(drive, file_id):
-    """Descarga un archivo .docx del Drive como bytes"""
-    request = drive.files().get_media(fileId=file_id)
+    """Descarga un template del Drive como bytes .docx"""
+    # Verificar el tipo de archivo
+    meta = drive.files().get(fileId=file_id, fields='mimeType,name').execute()
+    mime = meta.get('mimeType', '')
+    
+    if mime == 'application/vnd.google-apps.document':
+        # Es un Google Doc — exportar como .docx
+        request = drive.files().export_media(
+            fileId=file_id,
+            mimeType='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        )
+    else:
+        # Es un .docx nativo — descargar directo
+        request = drive.files().get_media(fileId=file_id)
+    
     buf = io.BytesIO()
     downloader = MediaIoBaseDownload(buf, request)
     done = False
