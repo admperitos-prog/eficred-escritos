@@ -4,7 +4,6 @@ import zipfile, re, os, io, base64, tempfile
 from lxml import etree
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseUpload, MediaIoBaseDownload
-from google.oauth2 import service_account
 
 app = Flask(__name__)
 CORS(app)
@@ -13,12 +12,18 @@ CORS(app)
 SCOPES = ['https://www.googleapis.com/auth/drive']
 
 def get_drive_service():
-    creds_json = os.environ.get('GOOGLE_CREDENTIALS_JSON')
-    if not creds_json:
-        raise Exception('GOOGLE_CREDENTIALS_JSON no configurado')
-    import json
-    creds_info = json.loads(creds_json)
-    creds = service_account.Credentials.from_service_account_info(creds_info, scopes=SCOPES)
+    from google.oauth2.credentials import Credentials
+    from google.auth.transport.requests import Request
+    
+    creds = Credentials(
+        token=None,
+        refresh_token=os.environ.get('GOOGLE_REFRESH_TOKEN'),
+        token_uri='https://oauth2.googleapis.com/token',
+        client_id=os.environ.get('GOOGLE_CLIENT_ID'),
+        client_secret=os.environ.get('GOOGLE_CLIENT_SECRET'),
+        scopes=SCOPES,
+    )
+    creds.refresh(Request())
     return build('drive', 'v3', credentials=creds)
 
 def descargar_template(drive, file_id):
