@@ -362,18 +362,17 @@ def generar():
         # Convertir a PDF
         pdf_bytes = docx_to_pdf(docx_bytes)
         
-        # Subir PDF al Drive
         from datetime import datetime
         fecha = datetime.now().strftime('%d-%m-%Y')
         car = datos.get('caratula', '')[:40]
         nombre = f"{tipo.upper()} - {car} - {fecha}.pdf"
         
-        resultado = subir_pdf(drive, folder_id, nombre, pdf_bytes)
+        # Devolver PDF como base64 para que el browser lo descargue
+        pdf_b64 = base64.b64encode(pdf_bytes).decode('utf-8')
         
         return jsonify({
             'ok': True,
-            'pdf_id': resultado['id'],
-            'url': resultado['webViewLink'],
+            'pdf_b64': pdf_b64,
             'nombre': nombre,
         })
     
