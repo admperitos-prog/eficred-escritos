@@ -15,12 +15,18 @@ def get_drive_service():
     from google.oauth2.credentials import Credentials
     from google.auth.transport.requests import Request
     
+    rt = os.environ.get('GOOGLE_REFRESH_TOKEN')
+    ci = os.environ.get('GOOGLE_CLIENT_ID')
+    cs = os.environ.get('GOOGLE_CLIENT_SECRET')
+    
+    print(f"DEBUG - RT: {rt[:10] if rt else 'NONE'}, CI: {ci[:10] if ci else 'NONE'}, CS: {cs[:10] if cs else 'NONE'}")
+    
     creds = Credentials(
         token=None,
-        refresh_token=os.environ.get('GOOGLE_REFRESH_TOKEN'),
+        refresh_token=rt,
         token_uri='https://oauth2.googleapis.com/token',
-        client_id=os.environ.get('GOOGLE_CLIENT_ID'),
-        client_secret=os.environ.get('GOOGLE_CLIENT_SECRET'),
+        client_id=ci,
+        client_secret=cs,
         scopes=SCOPES,
     )
     creds.refresh(Request())
