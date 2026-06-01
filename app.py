@@ -24,7 +24,7 @@ def get_drive_service():
 def descargar_template(drive, file_id):
     """Descarga un template del Drive como bytes .docx"""
     # Verificar el tipo de archivo
-    meta = drive.files().get(fileId=file_id, fields='mimeType,name').execute()
+    meta = drive.files().get(fileId=file_id, fields='mimeType,name', supportsAllDrives=True).execute()
     mime = meta.get('mimeType', '')
     
     if mime == 'application/vnd.google-apps.document':
@@ -35,7 +35,7 @@ def descargar_template(drive, file_id):
         )
     else:
         # Es un .docx nativo — descargar directo
-        request = drive.files().get_media(fileId=file_id)
+        request = drive.files().get_media(fileId=file_id, supportsAllDrives=True)
     
     buf = io.BytesIO()
     downloader = MediaIoBaseDownload(buf, request)
@@ -49,8 +49,14 @@ def subir_pdf(drive, folder_id, nombre, pdf_bytes):
     """Sube un PDF al Drive y devuelve el ID"""
     buf = io.BytesIO(pdf_bytes)
     media = MediaIoBaseUpload(buf, mimetype='application/pdf')
+    # supportsAllDrives=True permite subir a carpetas compartidas
     file_meta = {'name': nombre, 'parents': [folder_id]}
-    resultado = drive.files().create(body=file_meta, media_body=media, fields='id,webViewLink').execute()
+    resultado = drive.files().create(
+        body=file_meta,
+        media_body=media,
+        fields='id,webViewLink',
+        supportsAllDrives=True
+    ).execute()
     return resultado
 
 # ── IDs de los templates en Drive ──────────────────────────────
